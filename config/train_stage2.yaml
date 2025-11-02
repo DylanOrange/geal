@@ -1,0 +1,99 @@
+train:
+  seed: 42
+  epochs: 50
+  batch_size: 8
+  save_dir: runs/train/
+  name: geal_stage2
+  storage: true
+  log_name: train.log
+  resume: false
+  checkpoint_path: ""
+  pretrained_2d: ""
+  gpu: 0
+  kl_loss_weight: 0.1
+
+optimizer:
+  lr: 1e-4
+  tlr: 5e-6
+  weight_decay: 1e-3
+  step_size: 10
+  gamma: 0.5
+
+renderer:
+  sh_degree: 3
+  render_resolution: 112
+
+model_2d: 
+  stage1: false
+  level: 3
+  emb_dim: 512
+  num_heads: 8
+  n_groups: 40
+  dino_dim: 768
+  llm_dim: 512
+  project_dim: 64
+  freeze_text_encoder: false
+  text_encoder_type: roberta-base
+  normalize_mean: [0.485, 0.456, 0.406]
+  normalize_std: [0.229, 0.224, 0.225]
+  fuse_level: true
+
+model_3d:
+  normal_channel: false
+  num_heads: 4
+  emb_dim: 512
+  N_p: 64
+  n_groups: 40
+  project_dim: 64
+  freeze_text_encoder: false
+  text_encoder_type: roberta-base
+  training: true
+  level: 3
+  fuse_level: true
+
+  point_encoder:
+    layers:
+      - npoint: 512
+        radius: [0.1, 0.2, 0.4]
+        nsample: [32, 64, 128]
+        in_channel: 3
+        mlp:
+          - [32, 32, 64]
+          - [64, 64, 128]
+          - [64, 96, 128]
+      - npoint: 128
+        radius: [0.4, 0.8]
+        nsample: [64, 128]
+        in_channel: 320
+        mlp:
+          - [128, 128, 256]
+          - [128, 196, 256]
+      - npoint: 64
+        radius: [0.2, 0.4]
+        nsample: [16, 32]
+        in_channel: 512
+        mlp:
+          - [128, 128, 256]
+          - [128, 196, 256]
+
+  fp_layers:
+    fp3:
+      in_channel: 512
+      emb_add: true
+      mlp: [768, 512]
+    fp2:
+      in_channel: 832
+      mlp: [768, 512]
+    fp1:
+      in_channel: 518
+      add_normals: true
+      mlp: [512, 512]
+
+dataset:
+  category: laso
+  train_split: train
+  test_split: test
+  setting: seen
+  num_workers: 8
+  shuffle: true
+  data_root: laso_root

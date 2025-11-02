@@ -1,0 +1,46 @@
+train:
+  seed: 42
+  epochs: 50
+  batch_size: 8
+  save_dir: runs/train/
+  name: geal_stage1
+  storage: true
+  log_name: train.log
+  resume: false
+  checkpoint_path: runs/train/geal/stage1_best.pt
+  gpu: 0
+
+optimizer:
+  lr: 1e-4
+  tlr: 5e-6
+  weight_decay: 1e-3
+  step_size: 10
+  gamma: 0.5
+
+renderer:
+  sh_degree: 3
+  render_resolution: 112
+
+model_2d: 
+  stage1: true
+  level: 3
+  emb_dim: 512
+  num_heads: 8
+  n_groups: 40
+  dino_dim: 768
+  llm_dim: 512
+  project_dim: 64
+  freeze_text_encoder: false
+  text_encoder_type: roberta-base
+  normalize_mean: [0.485, 0.456, 0.406]
+  normalize_std: [0.229, 0.224, 0.225]
+  fuse_level: true
+
+dataset:
+  category: laso
+  train_split: train
+  test_split: test
+  setting: seen
+  num_workers: 8
+  shuffle: true
+  data_root: laso_root
